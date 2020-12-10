@@ -330,8 +330,10 @@ jobs:
             message(FATAL_ERROR "Failed to install dependencies")
           endif()
         endif()
+        find_package(Python3 REQUIRED COMPONENTS Interpreter)
+        string(REPLACE "x86" "x64" Python3_EXECUTABLE "${Python3_EXECUTABLE}")
         execute_process(
-          COMMAND python -m pip install --user beautifulsoup4 lxml
+          COMMAND ${Python3_EXECUTABLE} -m pip install --user beautifulsoup4 lxml
           RESULT_VARIABLE result
         )
         if (NOT result EQUAL 0)
@@ -394,6 +396,9 @@ jobs:
           set(ELFUTILS_OPTION)
         endif()
 
+        find_package(Python3 REQUIRED COMPONENTS Interpreter)
+        string(REPLACE "x86" "x64" Python3_EXECUTABLE "${Python3_EXECUTABLE}")
+
         execute_process(
           COMMAND python
             -u
@@ -403,6 +408,7 @@ jobs:
             --build build
             --qt-path "${{ steps.qt.outputs.qt_dir }}"
             --llvm-path "${{ steps.libclang.outputs.libclang_dir }}"
+            --python3 "${Python3_EXECUTABLE}"
             --with-tests
             ${CDB_OPTION}
             ${ELFUTILS_OPTION}
